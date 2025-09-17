@@ -1,23 +1,25 @@
 # Running Fiji on Wexac
 ## Introduction
-Wexac provides powerful machines to run Fiji in both batch and interactive modes. In both modes Fiji can be embedded in a docker that isolates it from the specific machine on which it runs. Having an isolated environment is the preferred way as it ensures stability and reproducibility.
+Wexac provides powerful machines to run Fiji in both batch and interactive modes.
 This document goes over the technicalities, suggests best practices and list some of the known bugs/issues.
 ## Interactive mode
 This mode enables the user to run on Wexac as if it was a workstation
 Once you enter one of Wexac login machines (see Appendix: Accessing Wexac for details), you run the following command as to acquire an interactive machine:
-bsub -XF -Is -R "rusage[mem=200000]" -gpu num=1 -q gpu-interactive /bin/bash
-You can set the amount of memory you want (change mem=200000) or weather you want a machine with (-q gpu-interactive) or without (-q interactive) gpu.
+
+    bsub -XF -Is -R "rusage[mem=200000]" -gpu num=1 -q gpu-interactive /bin/bash
+You can set the amount of memory you want (change mem=200000) or weather you want a machine with gpu (-q gpu-interactive) or without (-q interactive).
 Once a machine is found, you enter your password, and you can run Fiji (or any other app that is installed on Wexac). For Fiji you run the following command:
-~/data/Fiji.app/ImageJ-linux64 --heap 100GB &
-Where ~/data/Fiji.app/ImageJ-linux64 is the path to Fiji executable, and  --heap 100GB sets the amount of memory it needs
+
+    {Path to **YOUR** Linux Fiji folder}/Fiji.app/ImageJ-linux64 --heap 100GB &   
+Where {Path to **YOUR** Linux Fiji folder} is the path to Fiji executable, and  --heap 100GB sets the amount of memory it needs
 ### Known issues
 1.	CLIJ does not work as it is based on OpenCL that is not installed on Wexac machines
 2.	Currently the session may be terminated unexpectedly by Wexac
 3.	File path (including name) should not include ‘,’ or ‘;’
 
 ## Batch mode
-Once you enter one of Wexac login machines (see Appendix: Accessing Wexac for details),
-The best way to run a fiji job (or ant job) is by preparing a batch file (e.g., runFiji.bsub) that you submit. 
+Once you enter one of Wexac login machines,
+The best way to run a Fiji job (or ant job) is by preparing a batch file (e.g., runFiji.bsub) that you submit. 
 For Fiji the batch file should contain:
 
     #BSUB -q gpu-interactive
@@ -27,11 +29,11 @@ For Fiji the batch file should contain:
     #BSUB -o "<Path to Result folder> /%J.out"
     #BSUB -e "<Path to Result folder> /%J.err"
     "<Path to Fiji shell script>/RunHeadlessFiji.sh" "<Path to Fiji app>/Fiji.app/ImageJ-linux64" "<Path to Fiji macro>/MyFijiMacro.ijm" "Path to JSon parameters file"
-Where RunHeadlessFiji.sh can be dowloaded from here ([Fiji folder](../../tree/main/Fiji)).
+Where RunHeadlessFiji.sh can be dowloaded from here ([RunHeadlessFiji.sh](../../tree/main/Fiji)). and a sample Batch file can be found here ([batch.bsub](../../tree/main/Fiji)).
 
 **Notice:**
-•	Each of the above is surrounded by double quates, this is to enable spaces in them.
-•	Wexac job can accept many parameters that may be relevant for the job and you need to consult documentation for additional options.
+1. Each of the 4 paths above is surrounded by double quates, this is to enable spaces in them.
+2. Wexac job can accept many parameters that may be relevant for the job and you need to consult documentation for additional options.
 
 ### Known issues
 1.	CLIJ does not work as it is based on OpenCL that is not installed on Wexac machines
