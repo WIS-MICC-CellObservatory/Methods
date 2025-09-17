@@ -83,6 +83,7 @@ function openFile(file)
 	//imsOpenParms = "autoscale color_mode=Default view=Hyperstack stack_order=XYCZT series_"; //bioImage importer auto-selection
 	imsOpenParms = "color_mode=Default rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT use_virtual_stack series_1"
 	nd2OpenParms = "autoscale color_mode=Default rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT";
+	qptiffOpenParms = "autoscale color_mode=Default rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT series_1"
 	// ===== Open File ========================
 	// later on, replace with a stack and do here Z-Project, change the message above
 	if ( endsWith(file, "h5") )
@@ -91,6 +92,8 @@ function openFile(file)
 		run("Bio-Formats Importer", "open=["+file+"] "+ imsOpenParms);
 	if ( endsWith(file, "nd2") )
 		run("Bio-Formats Importer", "open=["+file+"] " + nd2OpenParms);
+	if ( endsWith(file, "qptiff") )
+		run("Bio-Formats Importer", "open=["+file+"] " + qptiffOpenParms);
 	else
 		open(file);
 	
