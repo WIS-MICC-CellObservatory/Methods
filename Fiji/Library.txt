@@ -1,1 +1,892 @@
+//input arr,msg
+//Prints the msg and then each value in the list on a new line
+function PrintArray_LSCF(arr,msg){
+	print(msg);
+	for(i=0;i<arr.length;i++){
+		print(arr[i]);
+	}
+}
+//input: stackImageId,projectionType,title
+//output: imageId of an image titeled "title" that is the result of Zproject "projectionType" on stackImageId
+function ZprojectStackImage_LSCF(stackImageId,projectionType,title){
+	selectImage(stackImageId);
+	run("Z Project...", "projection=["+projectionType+"]"); //e.g., Max Intensity
+	rename(title);
+	zProjImageId = getImageID();
+	return zProjImageId;
+}
+//input: imageId,channel,slice,title
+//Output: imageid of a new image titeled "title" containing only the specified channel and slice
+function ExtractChannelAndSlice_LSCF(imageId,channel,slice,title){
+	return DupChannelAndSlice_LSCF(imageId,channel,slice,title);
+}
+//input: imageId,channel,slice,title
+//Output: imageid of a new image titeled "title" containing only the specified channel and slice
+function DupChannelAndSlice_LSCF(imageId,channel,slice,title){
+	selectImage(imageId); //keep the double image selection!
+	selectImage(imageId); //keep the double image selection!
+	run("Select None");
+	roiManager("deselect");
+	run("Make Substack...", "channels="+channel+" slices="+slice);
+	rename(title);
+	sliceImageId = getImageID();
+	return sliceImageId;
+}
 
+//input: two images with the same number of slices
+//output: a single image where each slice contains the channels of both images - first the channels of the first image then those of the second image
+//Notice: if the images of different bit width the lower one is converted to the higher
+//original images are kept
+function MergeChannels_LSCF(imageId1, imageId2, slice1, slice2, title)
+{
+	selectImage(imageId1);
+	getDimensions(width1, height1, channels1, slices1, frames1);
+	depth1 = bitDepth(); 
+	selectImage(imageId2);
+	getDimensions(width2, height2, channels2, slices2, frames2);
+	depth2 = bitDepth();
+	
+	if(frames1 != 1 || frames2 != 1){
+		print("FATAL ERROR: MergeChannels does not support more than one slice/frame in either image");
+		return -100000000;
+	}
+	if(width1 != width2 || height1 != height2){
+		print("FATAL ERROR: MergeChannels does not support images of different width or height");
+		return -100000001;	
+	}
+	if(depth1 != depth2){
+		print("WARNNING: images of different bit width - converted");
+		if(depth1 < depth2){
+			ChangeBitWidth(imageId1, depth2);
+		}
+		else{
+			ChangeBitWidth(imageId2, depth1);
+		}
+	}
+
+	channels_titles1 = LoopMergeSlices(imageId1,channels1,"MergeChannels"+1,slice1, 0);
+	channels_titles2 = LoopMergeSlices(imageId2,channels2,"MergeChannels"+2,slice2, channels1);
+	channels_titles = channels_titles1 + channels_titles2 +" create";
+	//waitForUser("channels_titles: " + channels_titles);
+	run("Merge Channels...", channels_titles);
+	mergedImageId = getImageID();
+	rename(title);
+	return mergedImageId;
+
+	function LoopMergeSlices(imageId,channels,title_prefix,slice, from_index){
+		r = Math.floor(10000 * random);
+		channels_titles = "";
+		for(i=1;i<=channels;i++){
+			slice_title = title_prefix+"_"+i+"_"+r;
+			DupChannelAndSlice_LSCF(imageId,i,slice,slice_title);
+			channels_titles += "c"+(i+from_index)+"=["+slice_title + "] ";
+		}
+		return channels_titles;
+	}
+}
+
+//input: maskImageId, minAreaSize,title
+//Output: imageId of filtered mask
+//remove from mask areas smaller than minAReaSize and titles the new mask to be title
+//Notice: closes the previous mask and clears the Roi manage
+function FilterMask_LSCF(maskImageId,minAreaSize,title){
+	selectImage(maskImageId);
+	// Assumes you have a binary mask (0/255) image open
+	// Step 1: Clear previous ROIs
+	run("Select None");
+	roiManager("Reset");
+	setThreshold(2, 255, "raw");
+	// Step 2: Analyze particles and keep only those > 50 pixels
+	run("Analyze Particles...", "size="+minAreaSize+"-Infinity clear add");
+	// Step 3: Create a new blank mask
+	newImage("new image", "8-bit black", getWidth(), getHeight(), 1);
+	newImageId = getImageID();
+	// Step 4: Draw valid ROIs on new mask
+	n = roiManager("count");
+	if(n > 0){
+		roiManager("Select All");
+		roiManager("Fill");
+		roiManager("Deselect");
+	}
+	//roiManager("Reset");
+	
+	filteredImageId = ImageToMask_LSCF(newImageId,2,  title);
+	CloseImageId_LSCF(maskImageId, filteredImageId);
+	return filteredImageId;
+}
+
+//input: imageId, currentImageId
+//output: currentImageId
+//Closes imageId and selects currentImageId
+function CloseImageId_LSCF(imageId, currentImageId){
+	selectImage(imageId);
+	close();
+	selectImage(currentImageId);
+	return currentImageId;
+}
+
+//input: mask image id
+//output: the index of an roi that contains all the points of the contour of the mask
+function GetContour_LSCF(maskImageId){
+	selectImage(maskImageId);
+	setThreshold(2, 255, "raw");
+	n = roiManager("count");
+	roiManager("deselect");
+	run("Create Selection");
+	if(selectionType()  < 0)
+		return -1; // no selection made
+	roiManager("add");	
+	roiManager("select", n);
+	//run("Erode (3D)", "iso=255"); bug in batch hide mode - creates extra window
+	run("Erode");
+	setThreshold(2, 255, "raw");
+	run("Create Selection");
+	roiManager("add");
+	roiManager("Select", newArray(n,n+1));
+	roiManager("XOR");
+	roiManager("Add");
+	//roiManager("select", n);
+	//run("Fill", "slice");
+	roiManager("Select", n+2);
+	return n+2;
+}
+
+//input: imageId,inverseInd
+//output: imageId of distance map
+function RoiToDistanceMap_LSCF(imageId,invertInd){
+	run("Select None");
+	n = roiManager("count");
+	rois = Array.getSequence(n);
+	roiManager("select", rois);
+	roiManager("combine");
+	run("Create Mask");
+	roiManager("deselect");
+	if(invertInd){
+		run("Invert");
+	}
+	run("Distance Map");
+	distanceImageId = getImageID();
+	return distanceImageId;
+}
+
+//input: table, column name and scale
+//Output: none
+//Multiplies all the values of the column by scale in table
+function ScaleColumn_LSCF(table,columnName,scale){
+	arr = Table.getColumn(columnName,table);
+	for(i=0;i<arr.length;i++){
+		arr[i] *= scale;
+	}
+	Table.setColumn(columnName, arr, table);
+}
+function RunStardistModel_LSCF(imageId, model/*Versatile (fluorescent nuclei)/...*/, outputType/*ROI Manager/Label Image/Both*/, normalizeInput/*"true"*/,  additional_flags/*""*/){
+	selectImage(imageId);
+	title = getTitle();
+	run("Command From Macro", "command=[de.csbdresden.stardist.StarDist2D], args=['input':'"+title+"', 'modelChoice':'"+model+"', 'normalizeInput':'"+normalizeInput+ "', 'outputType':'"+outputType+"'"+ additional_flags+"], process=[false]");
+	return getImageID();
+}
+//input: imageId, model, diameter, ch1, ch2, additional_flags, cellposeEnv (e.g.: model: "cyto3" or full path, ch1: 1, ch2: 0, a.f.: ""--use_gpu"
+//Output: image id of label image created by cellpose
+function RunCellpose_LSCF(imageId, model, diameter, ch1, ch2, additional_flags, cellposeEnv){
+	selectImage(imageId);
+	modelAndPath = " model="+model+" model_path=path\\to\\own_cellpose_model";
+	if(File.exists(model)){
+		modelAndPath = "model= model_path=["+model+"]";
+	}
+	run("Cellpose ...", "env_path=["+cellposeEnv+"] env_type=conda" + modelAndPath + " diameter="+diameter + " ch1="+ch1 + " ch2="+ch2 + " additional_flags="+additional_flags);
+	return getImageID();
+}
+
+//input: image id
+//	     Title
+//Output: normalized image id
+//normalizes the image (0-1) and set the title of the normalized image to Title
+function NormalizeImage_LSCF(imageId, newTitle){
+	selectImage(imageId);
+	// normalize
+	image3 = getTitle();
+	Ext.CLIJ2_push(image3);
+	image4 = "normalize "+random;
+	Ext.CLIJx_normalize(image3, image4);
+	Ext.CLIJ2_pull(image4);
+	rename(newTitle);
+	return getImageID();
+}
+
+//input: label image id
+//Output: mask image id
+//Creates a mask from a label image
+function LabelImageToMask_LSCF(labelImageId){
+	setThreshold(1, 100000000, "raw");	
+	selectImage(labelImageId);
+	run("Convert to Mask");
+	return getImageID();
+}
+
+//input: image id
+//Output: mask image id
+//closes the image
+function ImageToMask_LSCF(imageId, threshold, title){
+	selectImage(imageId);
+	setThreshold(threshold, 1000000000000);
+	run("Create Mask");
+	maskImageId = getImageID();
+	rename(title);
+	CloseImageId_LSCF(imageId, maskImageId);
+	return maskImageId;
+}
+
+//input: mask image id
+//Output: none
+//Creates a single roi from mask
+function MaskToRoi_LSCF(maskImageId, roiLabel){
+	run ("Create Selection");           
+	roiManager("Add");
+	RenameLastRoi_LSCF(roiLabel);
+}
+//input: roi label
+//Output: none
+//Renames the last roi to the given label
+function RenameLastRoi_LSCF(roiLabel){
+	n = roiManager("count");
+	roiManager("deselect");
+	roiManager("select", n-1);
+	roiManager("rename", roiLabel);
+}
+function LabelImageToSingleROI_LSCF(labelImageId, roiLabel){
+	maskImageId = LabelImageToMask_LSCF(labelImageId);
+	MaskToRoi_LSCF(maskImageId, roiLabel);
+	selectImage(maskImageId);
+}
+
+//Input: imageId, minArea, maxArea, fromRoiInd, toRoiInd
+//Output: number of deleted rois
+//Goes over rois from fromRoiInd to toRoiInd (exclusive, use -1 to ignore either) and removes all those not between min and max area (-1 to ignore either)
+function FilterRoisByArea_LSCF(imageId, minArea, maxArea, fromRoiInd, toRoiInd)
+{
+	return FilterRois_LSCF(imageId, minArea, maxArea, -1, -1, fromRoiInd, toRoiInd)
+}
+//Input: imageId, minIntensity, maxIntensity, fromRoiInd, toRoiInd\n
+//Output: number of deleted rois\n
+//Goes over rois from fromRoiInd to toRoiInd (exclusive, use -1 to ignore either) and removes all those not between min and max intensity (-1 to ignore either)
+function FilterRoisByIntensity_LSCF(imageId, minIntensity, maxIntensity, fromRoiInd, toRoiInd)
+{
+	return FilterRois_LSCF(imageId, -1, -1, minIntensity, maxIntensity, fromRoiInd, toRoiInd)
+}
+
+//Input: imageId, minArea, maxArea, minIntensity, maxIntensity, fromRoiInd, toRoiInd\n
+//Output: number of deleted rois\n
+//Goes over rois from fromRoiInd to toRoiInd (exclusive, use -1 to ignore either) and removes all those not between min and max (-1 to ignore any)
+function FilterRois_LSCF(imageId, minArea, maxArea, minIntensity, maxIntensity, fromRoiInd, toRoiInd)
+{
+	run("Select None");
+	roiManager("deselect");
+	selectImage(imageId);
+	n = roiManager("count");
+	fromRoiInd = maxOf(0,fromRoiInd);
+	if(toRoiInd < 0)
+		toRoiInd = n;
+	else
+		toRoiInd = minOf(toRoiInd,n);
+		
+	for(i=toRoiInd-1;i>=fromRoiInd;i--){
+		roiManager("select", i);
+		getStatistics(area, mean);
+		if(minArea > 0 && area < minArea){
+			roiManager("delete");
+			continue;
+		}		
+		if(maxArea > 0 && area > maxArea){
+			roiManager("delete");	
+			continue;
+		}
+		if(minIntensity > 0 && mean < minIntensity){
+			roiManager("delete");		
+			continue;
+		}		
+		if(maxIntensity > 0 && mean > maxIntensity){
+			roiManager("delete");		
+			continue;
+		}
+	}
+	return n -  roiManager("count");
+}
+
+//Input: image id, invertInd and name of resulting distance map
+//Output: ImageId of distance image
+function CreateDistanceMapFromAllRois_LSCF(imageId,invertInd,name){
+	maskImageId = RoiToMask_LSCF(imageId);
+	selectImage(maskImageId);
+	//run distance transform: values are in pixels not microns!
+	if(invertInd){
+		run("Invert");
+	}
+	run("Distance Transform 3D");
+	distanceImageId =  getImageID();
+	rename(name);
+	selectImage(maskImageId);
+	close();
+	return distanceImageId;
+}
+//input imageId,xpoints, ypoints, threshold
+//rteuns an array 0: num points above threshold, 1: sum intensities 2: mean intensities, 3: std
+function GetIntensitiesStatistics_LSCF(imageId,xpoints, ypoints, threshold){
+	sum = 0;
+	std = 0;
+	mean = 0;
+	n = 0;
+	selectImage(imageId);
+	for(i=0;i<xpoints.length;i++){
+		v = getPixel(xPreFos, yPreFos);	
+		if(v > threshold){
+			n += 1;
+			sum += v;
+		}
+		sum = sum + getPixel(xPreFos, yPreFos);		
+	}
+	mean = sum/n;
+	for(i=0;i<xpoints.length;i++){
+		v = getPixel(xPreFos, yPreFos);	
+		if(v > threshold){
+			std += (v - mean)*(v - mean);
+		}
+	}
+	std = Math.sqrt(std/n);
+	return newArray(n,sum,mean,std);
+}
+//input: distanceMapImageId,xC,yC, xP, yP
+//Normalize the particle’s distance to the edge along the ray from the region’s centroid through the particle:
+//Output: (1 - r/R) where r is distance point to center and R distance center to edge on the same dircetion as point
+function GetDirectionalNormalizedDistance_LSCF(distanceMapImageId,xC,yC, xP, yP){
+	selectImage(distanceMapImageId);
+	// Direction vector from region centroid to particle centroid ---
+	dx = xP - xC;
+	dy = yP - yC;
+	r  = sqrt(dx*dx + dy*dy);     // particle radial distance
+
+	if (r == 0) {
+		// partical at center
+		return 1;
+	}
+
+	// Unit direction (ux, uy)
+	ux = dx / r;
+	uy = dy / r;
+
+	// March along the ray to find boundary crossing (first outside pixel) ---
+	w = getWidth();  h = getHeight();
+
+
+	// Start right at centroid and move outward
+	step = 0.25;        // subpixel step (adjust if needed)
+	t = 0.0;
+	maxT = sqrt(w*w + h*h); // upper bound to avoid infinite loops
+
+	prevInside = 1;
+	t_prev = 0.0;
+	R_approx = NaN;
+
+	while (t <= maxT) {
+	    x = xC + t*ux;
+	    y = yC + t*uy;
+	    nowInside = insideMask(x, y);
+	    if (prevInside == 1 && nowInside == 0) {
+	        // We crossed the boundary between t_prev (inside) and t (outside)
+	        // --- 5) Refine with a short bisection to estimate R more precisely ---
+	        lo = t_prev; hi = t;
+	        // Safety: ensure lo is inside, hi is outside
+	        for (i=0; i<20; i++) {
+	            mid = 0.5*(lo + hi);
+	            if (insideMask(xC + mid*ux, yC + mid*uy) == 1)
+	                lo = mid;
+	            else
+	                hi = mid;
+	        }
+	        R_approx = lo; // last inside estimate
+	        break;
+	    }
+	    prevInside = nowInside;
+	    t_prev = t;
+	    t += step;
+	}
+
+	// Fallback if we never exited before hitting image edge
+	if (isNaN(R_approx)) {
+	    // Clip to image bounds distance as a conservative fallback
+	    // (You can choose to error out instead)
+	    R_approx = t_prev;
+	    print("Warning: ray did not hit background before image edge; using last inside distance.");
+	}
+	function insideMask(x, y) {
+	    xi = round(x); yi = round(y);
+	    if (xi < 0 || yi < 0 || xi >= w || yi >= h) 
+	    	return 0;
+	    v = getPixel(xi, yi);
+	    if(v != 0)
+	    	return 1;
+	    return 0;
+	}
+
+
+	// Compute normalized score ---
+	s = 1.0 - (r / (R_approx + 1e-9));
+	if (s < 0) s = 0;
+	if (s > 1) s = 1;
+	
+	// Report ---
+	//print("Region centroid (xC,yC): " + xC + ", " + yC);
+	//print("Particle centroid (xP,yP): " + xP + ", " + yP);
+	//print("r (centroid→particle): " + r);
+	//print("R (centroid→boundary along ray): " + R_approx);
+	//print("Normalized s = 1 - r/R: " + s);
+	return s;
+}
+
+//input: path of file to open
+//output: image-id of opend window
+//Opens h5,ims,nd2 and other file types
+function openFile_LSCF(fullPath)
+{
+	// ===== Open File ========================
+	if ( endsWith(fullPath, "h5") )
+		run("Import HDF5", "select=["+fullPath+"] "+ gH5OpenParms);
+	if ( endsWith(fullPath, "ims") )
+		run("Bio-Formats Importer", "open=["+fullPath+"] "+ gImsOpenParms);
+	if ( endsWith(fullPath, "nd2") )
+		run("Bio-Formats Importer", "open=["+fullPath+"] autoscale color_mode=Default rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT");
+	else
+		open(fullPath);
+	return getImageID();
+}
+
+//input: 1 or more rois to select
+//output: deselect any other roi or selection and selects the given roi/s
+function RoisReselect_LSCF(rois){
+	roiManager("deselect");
+	run("Select None");
+	roiManager("select", rois);
+}
+
+
+//input: None
+//output: None
+//replaces all rois with a single one that combines them all
+function CombineRois_LSCF(){
+	roiManager("deselect");
+	roiManager("combine");
+	roiManager("delete");
+	roiManager("add");
+}
+
+//input: 1 or more rois to select
+//output: deselect any other roi or selection and selects the given roi/s
+function RoisReselect_LSCF(rois){
+	roiManager("deselect");
+	run("Select None");
+	roiManager("select", rois);
+}
+
+//Input: imageId
+//Output: ImageId of mask image
+function AllRoisToMask_LSCF(imageId){
+	roiManager("deselect");
+	selectImage(imageId);
+	run("Remove Overlay");
+	run("From ROI Manager");
+	run("Create Mask");
+	maskImageId = getImageID();
+	selectImage(imageId);
+	run("Remove Overlay");
+	selectImage(maskImageId);
+	return maskImageId;
+}
+
+//Input: imageId
+//Output: ImageId of mask image
+function RoiToMask_LSCF(imageId,roiInd){
+	roiManager("deselect");
+	roiManager("select",roiInd);
+	selectImage(imageId);
+	run("Remove Overlay");
+	run("Create Mask");
+	maskImageId = getImageID();
+	selectImage(imageId);
+	run("Remove Overlay");
+	selectImage(maskImageId);
+	return maskImageId;
+}
+
+
+//Input: path
+//Output: none
+//
+//Creates all dirctories in the given path
+function MakeDirRecursive_LSCF(path){
+	dirs = split(path,"\\/");
+	sub_path = dirs[0];
+	for(i=1;i<dirs.length;i++){
+		if(String.trim(dirs[i].length) > 0){
+			sub_path += "/"+ dirs[i];
+			if(!File.exists(sub_path)){
+				File.makeDirectory(sub_path);
+			}
+		}
+	}
+}
+
+//Input: array of numbers
+//Output: sum all inputs
+//
+//sums all elements of array
+function SumArray_LSCF(arr){
+	sum = 0;
+	for(i=0;i<arr.length;i++){
+		sum += arr[i];
+	}
+	return sum;
+}
+
+//Input: Auto Threshold method and is white on black indication
+//Output: none
+//
+//run Auto Threshold with the given method on the current selected image
+function AutoThreshold_LSCF(method, isWhite){
+	autoCommandParameters = "method=["+method+"]";
+	if(isWhite){
+		autoCommandParameters += " white";
+	}
+	run("Auto Threshold", autoCommandParameters);
+}
+
+
+//Input: table_name (string)
+//Output: None
+//
+//Closes a table with the given name (without saving)
+function CloseTable_LSCF(table_name)
+{
+	if (isOpen(table_name))
+	{
+		selectWindow(table_name);
+		run("Close");
+	}
+}
+
+//Input: angle (0-360)
+//Output: angle (radians)
+function ToRadians_LSCF(angle)
+{
+	return angle*PI/180;
+}
+
+//Input:
+//	array: an array
+//	value: a value possabliy in the array
+//Output: first index of value in array or -1
+function Array_Contains_LSCF(array, value){
+	n = array.length;
+	for(i=0;i<n;i++){
+		if(array[i] == value){
+			return i;
+		}
+	}
+	return -1;
+}
+
+//Input:
+//	name: roi name (string)
+//	xPoints, yPoints: roi points
+//Output: None
+//
+//Creates a Polygon ROI with the given name
+function GenerateROIFromPoints_LSCF(name, xPoints, yPoints)
+{
+	makeSelection("polygon", xPoints, yPoints);	
+	roiManager("Add");
+	n = roiManager("count");
+	roiManager("Select", n-1);
+	roiManager("Rename", name);
+}
+
+//Input: None
+//Output: index of selected roi or -1;
+//
+//Selects the last Roi (if exists) and returns its index
+function SelectLastROI_LSCF()
+{
+	n = roiManager("count");
+	if(n > 0){
+		roiManager("Select", n-1);
+		return n-1;
+	}
+	return -1;
+}
+
+//Input: name of roi
+//Output: index of selected roi or -1;
+//
+//Selects the first Roi with given name (if exists) and returns its index
+function SelectRoiByName_LSCF(roiName) { 
+	nR = roiManager("Count"); 
+	 
+	for (i=0; i<nR; i++) { 
+		roiManager("Select", i); 
+		rName = Roi.getName(); 
+		if (matches(rName, roiName) ) { 
+			roiManager("Select", i);	
+			return i;
+		} 
+	} 
+	return -1; 
+} 
+
+
+//Input:
+//	imageId: image id of image
+//	channel: channel number to duplicate 
+//	newTitle: Title of duplicated image
+//Output: the id of the duplicated image
+//
+//Duplicate the entire channel image (reset and selected roi or selection)
+function DupChannel_LSCF(imageId,channel,newTitle)
+{
+	return DupChannelAndSlice_LSCF(imageId,channel,1,newTitle);
+}
+
+
+//Input: None
+//Output: timestrin of current date and time. E.g., "Date: 03, Feb 2023 Time: 14:04:23
+function GetTimeString_LSCF()
+{
+	MonthNames = newArray("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+	DayNames = newArray("Sun", "Mon","Tue","Wed","Thu","Fri","Sat");
+	getDateAndTime(year, month, dayOfWeek, dayOfMonth, hour, minute, second, msec);
+	TimeString ="Date: "+DayNames[dayOfWeek]+" ";
+	if (dayOfMonth<10) {TimeString = TimeString+"0";}
+	TimeString = TimeString+dayOfMonth+"-"+MonthNames[month]+"-"+year+", Time: ";
+	if (hour<10) {TimeString = TimeString+"0";}
+	TimeString = TimeString+hour+":";
+	if (minute<10) {TimeString = TimeString+"0";}
+	TimeString = TimeString+minute+":";
+	if (second<10) {TimeString = TimeString+"0";}
+	TimeString = TimeString+second;
+	return TimeString;
+}
+
+//Input:
+//	fromTable: source table
+//	newTable: destination table
+// 	rowIndex: index of table, starting from 0, in source table
+//
+// row is copied to end of destination table
+// Notice: Both tables must exsit
+function CopyTableRow_LSCF(fromTable, newTable, rowIndex)
+{
+	h = split(Table.headings(fromTable),"\t");
+	n = h.length;
+	size = Table.size(newTable);
+	for ( i=0; i<n; i++ )
+	{
+		s = Table.getString(h[i], rowIndex,fromTable);
+		Table.set(h[i], size,s,newTable);
+	}
+}
+
+
+//Input:
+//	path: of file to save
+//	fileName: name of file to save (no extention)
+//Output: none
+//save all rois to the given file name with .zip extention
+function StoreROIs_LSCF(path,fileName)
+{
+	roiManager("Deselect");
+	roiManager("Save", path +"/" + File.nameWithoutExtension(fileName)+".zip");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// Turtle graphics library
+// Installation: Copy to the macros folder and restart ImageJ
+// Example1: TurtleGraphics.ijm, TurtleGraphicsPatterns.ijm
+// Author: Jerome Mutterer
+
+function home() {
+    x1=0;y1=0;
+    toUnscaled(x1,y1);
+    turtleLineTo(x1,y1);
+    Property.set('turtle.x',0);
+    Property.set('turtle.y',0);
+    Property.set('turtle.heading',0);
+    displayTurtle();
+}
+
+function xCor() {
+    x=Property.get('turtle.x');
+    return parseFloat(x);
+}
+
+function clean() {
+    run('Select All');
+    run('Clear');
+    run('Select None');
+}
+
+function dot(x,y) {
+    toUnscaled(x,y);
+    makePoint(x,y);
+    run('Draw');
+    displayTurtle();
+}
+
+function yCor() {
+    y=Property.get('turtle.y');
+    return parseFloat(y);
+}
+
+function shownP() {
+    turtleHidden=Property.get('turtle.hidden');
+    return !turtleHidden;
+}
+
+function heading() {
+   h = Property.get('turtle.heading');
+   return h;
+}
+
+function pos() {
+    x=xCor();
+    y=yCor();
+    return ''+x+','+y;
+}
+
+function setPos(p) {
+    position = split(p,',');
+    setPosXY(position[0],position[1]);
+    displayTurtle();
+}
+
+function setPosXY(x,y) {
+    Property.set('turtle.x',x);
+    Property.set('turtle.y',y);
+    toUnscaled(x,y);
+    turtleLineTo(x,y);
+    displayTurtle();
+}
+
+function setX(x) {
+    Property.set('turtle.x',x);
+    y=yCor();
+    toUnscaled(x,y);
+    turtleLineTo(x,y);
+    displayTurtle();
+}
+
+function setY(y) {
+    Property.set('turtle.y',y);
+    x=xCor();
+    toUnscaled(x,y);
+    turtleLineTo(x,y);
+    displayTurtle();
+}
+
+function hideTurtle() {
+    Property.set('turtle.hidden',1);
+    run('Remove Overlay');
+    
+}
+function showTurtle() {
+    Property.set('turtle.hidden',0);
+}
+function penDown() {
+    Property.set('turtle.pendown',1);
+}
+function penUp() {
+    Property.set('turtle.pendown',0);
+}
+
+function setHeading(head) {
+    Property.set('turtle.heading',head);
+    displayTurtle();
+}
+
+function turtleLineTo(a,b) {
+   pendown = Property.get('turtle.pendown');
+   if (pendown>0) lineTo(a,b);
+   else moveTo(a,b);
+}
+
+
+function back(distance) {
+    x=xCor();
+    y=yCor();
+    head=heading();
+    toUnscaled(x,y);
+    alpha= Math.toRadians(180+180-head);
+    x1=x+distance*sin(alpha);
+    y1=y+distance*cos(alpha);
+    turtleLineTo(x1, y1);
+    toScaled(x1,y1);
+    Property.set('turtle.x',x1);
+    Property.set('turtle.y',y1);
+    displayTurtle();
+}
+function forward(distance) {
+    back(-1*distance);
+}
+
+function turtleGraphics() {
+    ijtg='ImageJ Turtle Graphics';
+    if (isOpen(ijtg)) selectWindow(ijtg);
+    else {
+        newImage(ijtg, 'RGB white', 512, 512, 1);
+        run('Properties...', 'channels=1 slices=1 frames=1 pixel_width=1.0000 pixel_height=1.0000 voxel_depth=1.0000 origin=256,256 invert');
+    }
+    run('Remove Overlay');
+}
+function clearScreen() {
+    turtleGraphics();
+    setForegroundColor(0, 0, 0);
+    setBackgroundColor(255, 255, 255);
+    clean();
+    Property.set('turtle.x',0);
+    Property.set('turtle.y',0);
+    Property.set('turtle.heading',0);
+    Property.set('turtle.hidden',0);
+    Property.set('turtle.pendown',1);
+    displayTurtle();
+}
+function left(alpha) {
+    head=parseFloat(heading());
+    Property.set('turtle.heading',head-alpha);
+    displayTurtle();
+}
+function right(alpha) {
+    left(-1*alpha);
+    displayTurtle();
+}
+
+function displayTurtle() {
+    turtleHidden=Property.get('turtle.hidden');
+    if (turtleHidden)
+        return;
+    turtleGraphics();
+    x=xCor();
+    y=yCor();
+    head=heading();
+    toUnscaled(x,y);
+    moveTo(x,y);
+    alpha= Math.toRadians(180-head);
+    makeArrow(x,y, x+15*sin(alpha), y+15*cos(alpha), 'notched medium');
+    Roi.setStrokeColor('gray');
+    run('Add Selection...');
+}
