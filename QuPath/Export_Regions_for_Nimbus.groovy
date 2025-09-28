@@ -106,17 +106,7 @@ instanSegPath = "A:/tzlily/Qpath6_MC38/fluorescence_nuclei_and_cells"
 channelsForSegmentation = [ColorTransforms.createChannelExtractor("DAPI"), 
                         ColorTransforms.createChannelExtractor(4), 
                         ColorTransforms.createChannelExtractor(5), 
-                        ColorTransforms.createChannelExtractor(6), 
-                        ColorTransforms.createChannelExtractor(7), 
-                        ColorTransforms.createChannelExtractor(8), 
-                        ColorTransforms.createChannelExtractor(9), 
-                        ColorTransforms.createChannelExtractor(10), 
-                        ColorTransforms.createChannelExtractor(11), 
-                        ColorTransforms.createChannelExtractor(12), 
-                        ColorTransforms.createChannelExtractor(13), 
-                        ColorTransforms.createChannelExtractor(14), 
-                        ColorTransforms.createChannelExtractor(15), 
-                        ColorTransforms.createChannelExtractor(16)]
+                        ColorTransforms.createChannelExtractor(6)]
 
 // ========= General Parameters =================================================
 downsample = 1
