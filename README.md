@@ -31,3 +31,17 @@ This template contains standart ways to:
 The template can be found here ([Macro Template_headless.ijm](../../tree/main/Fiji)).
 
 For details how to run Fiji macro on Wexac machine see ([Running Fiji on Wexac.md](../../tree/main)).
+
+## QuPath
+1. Running QuPath on Wexac
+2. Nimbus Pipeline
+
+## Python
+1. Sharing python solution with users
+2. User interface template
+
+### Sharing python solution with users
+Python solutions depends heavily on existing packages and when we develop a solution it would probably include some external packages.
+
+To make sure the packages are installed on the computer the user runs our solution, when we provide 
+
