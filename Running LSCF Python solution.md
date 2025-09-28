@@ -14,7 +14,7 @@ These steps are done once for each computer
 In the first run the user may need to set the proxy of the workstation (This is the case when working on LSCF workstaions):
 
 **Steps**
-1. Open Proxy settings
+1. Open **Proxy settings** (see image below)
 2. Enable the "Use a proxy Server" checkbox
 3. Set the Address to be: http://bcproxy.weizm
 4. Set the port 8080
@@ -29,9 +29,7 @@ If not, go to https://www.anaconda.com/download to install it
 
 ### Create the solution enviorenment
 **Steps**
-1. Open an Anaconda prompt
-<img width="1027" height="426" alt="image" src="https://github.com/user-attachments/assets/cf167709-6ba0-463e-896c-7903276a3a2a" />
-
+1. Open **Anaconda prompt**
 2. Create the Conda relevant environment using the **.yml** file provided (e.g., imzml_env.yml) by running the following command:
 <p align="center">
 conda env create -f {Path to where .yml file is located on disk}/imzml_env.yml
@@ -40,10 +38,10 @@ This will create **imzml_env** enviorenment
   
 ## Run the solution
 **Steps**
-1. Open an Anaconda prompt (See above for details)
+1. Open **Anaconda prompt**
 2. Navigate to where the solution is stored on disk 
 
-  use cd {path} command to get to the folder where your Jupyter notebook resides. Notice, in case it is on a different drive (e.g., D: and not C:, first switch to that drive by writing the Drive name (e.g., D:) and only then use the cd command
+  use cd {path} command to get to the folder where your solution file resides. Notice, in case it is on a different drive (e.g., D: and not C:, first switch to that drive by writing the Drive name (e.g., D:) and only then use the cd command
 
 3. Activate the enviorenment (e.g., imzml_env) by running the following command:
 <p align="center">
