@@ -70,3 +70,44 @@ Notice: the list may not include channels that were not specified when exporting
 **Notice:** 
 
 •	One may check the {base_dir}/image_data/fov0 directory for the list of channels that may be included, or run the following code:
+
+<pre><code>
+# run this to get all the names of possible channels: you can then copy the relevant ones to the include_channels list below
+tif_files = [f for f in os.listdir(os.path.join(tiff_dir,"fov0")) if f.endswith(".tiff")]
+# Print them in the required format
+formatted = ', '.join(f'"{file}"' for file in tif_files)
+print(formatted.replace(".tiff",""))
+</code></pre>
+•	A csv file with all the measurements exported from QuPath together with the probabilities assigned to each cell by Nimbus can be found in {base_dir}/image_data/export/combined_measurments.csv file and can be used for clustering and further analysis external to QuPath.
+
+After making the modifications, you can run the whole notebook, or stop after section 5 the cell that generates a csv file that can be uploaded to QuPath can be found as  {base_dir}/ nimbus_output/nimbus_cell_table.csv. The cell is 
+Run the notebook cell by cell 
+
+**3. Assign initial classification**
+This script runs on the currently open image. To run the script do the following steps:
+<ol>
+<li>Make sure the image used for the segmentation is selected in the project</li>
+<li>Download the <strong>import_Nimbus_Predictions.groovy</strong> file from [here](../../tree/QuPath)</li>
+<li>Open the script in your QuPath project.</li>
+<li>Modify the script to fit your needs. Specifically:
+  <ol>
+    <li>Set the path to the table created by nimbus (line 9)
+    <img width="858" height="83" alt="image" src="https://github.com/user-attachments/assets/4a0b83d8-89eb-4e46-9254-29e291754255" />
+    </li>
+    <li>In case you exported specific regions and not the entire image:
+      <ol>
+        <li>Set parameter <strong>annotationToConsider</strong>strong> to the class used when exported the segmentation. (line ~12)</li>
+        <li>Set the variable <strong>fullImageAnnotation</strong> to be false (line ~13)</li>
+        <li>Otherwise, Set the variable <strong>annotationToConsider</strong> to be true (line ~13)</li>
+      </ol>
+    </li>
+  </ol>
+    <li>Run the script. When completed, each cell will have additional measurements with the probability of that cell to express each marker (see example below)
+      
+    <img width="453" height="559" alt="image" src="https://github.com/user-attachments/assets/4f35adff-706e-4227-a2c2-bf863c34df33" />
+    </li>
+  </ol>
+  
+
+      
+
