@@ -23,20 +23,20 @@ We start by describing how to run the each step online, and then describe how to
       <li>In case you want to run on specific annotations and not on the entire image/s:
       <ol>
           <li>Create annotations of interests and set their class to be the same (e.g., “Region”). (line ~111)</li>
-          <li>Set the parameter <strong>annotationToConsider</strong> accordingly. (line ~111)</li>
-          <li>Set the variable <strong>fullImageAnnotation</strong> to be false (line ~112)</li>
+          <li>Set the parameter <strong>annotationToConsider</strong> accordingly. (line 98)</li>
+          <li>Set the variable <strong>fullImageAnnotation</strong> to be false (line 99)</li>
         <img width="403" height="85" alt="image" src="https://github.com/user-attachments/assets/eafbecec-1258-4632-badb-cb37da007c80" />
       </ol>
-      <li>Otherwise, Set the variable <strong>fullImageAnnotation</strong> to be true (line ~112)</li>
+      <li>Otherwise, Set the variable <strong>fullImageAnnotation</strong> to be true (line 99)</li>
     </li>
-    <li>Set the output folders (lines ~113,114)
+    <li>Set the output folders (lines 100,103)
       <ol>
           <li><strong>outFolder</strong>: The folder where the folders and files required by Nimbus will reside</li>
           <li><strong>InstanSegPath</strong>: Path to the model InstanSeg will use for segmentation (Usually the path includes the QuPath project folder and in it the folder that includes the InstanSeg related model. E.g. "A:/tzlily/Qpath6_MC38/fluorescence_nuclei_and_cells"</li>
           <img width="882" height="93" alt="image" src="https://github.com/user-attachments/assets/8f3d1a57-f05d-46d8-be43-669577862338" />
       </ol>
     </li>
-    <li>Define the channels that will be used for the segmentation (line ~117-120):
+    <li>Define the channels that will be used for the segmentation (line ~106-109):
 <img width="884" height="147" alt="image" src="https://github.com/user-attachments/assets/a823d7bd-9bb8-4a22-83fc-f774ddad57d3" />
 Notice:
       
