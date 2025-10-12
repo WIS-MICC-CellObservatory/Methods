@@ -48,7 +48,7 @@ Notice:
   <li>If you want to run on several images rather than the current one, use the run->run for project option</li>
 </ol>
 
-## 2. Assign Nimbus probabilities
+## 3. Assign Nimbus probabilities
 Check the instructions in [Running LSCF Python solution.md](../../tree) for general instruction regarding running Jupyter notebooks. Specificaly:
 <ol>
 <li>Download the **nimbus_env.yml** file from [here](../../tree/Python/Nimbus) and generate **nimbus_env** with it</li>
@@ -83,7 +83,7 @@ print(formatted.replace(".tiff",""))
 After making the modifications, you can run the whole notebook, or stop after section 5 the cell that generates a csv file that can be uploaded to QuPath can be found as  {base_dir}/ nimbus_output/nimbus_cell_table.csv. The cell is 
 Run the notebook cell by cell 
 
-**3. Assign initial classification**
+## 4. Upload probabilities to QuPath
 This script runs on the currently open image. To run the script do the following steps:
 <ol>
 <li>Make sure the image used for the segmentation is selected in the project</li>
@@ -102,12 +102,31 @@ This script runs on the currently open image. To run the script do the following
       </ol>
     </li>
   </ol>
-    <li>Run the script. When completed, each cell will have additional measurements with the probability of that cell to express each marker (see example below)
-      
+    <li>Run the script. When completed, each cell will have additional measurements with the probability of that cell to express each marker (see example below)<br/>
     <img width="453" height="559" alt="image" src="https://github.com/user-attachments/assets/4f35adff-706e-4227-a2c2-bf863c34df33" />
     </li>
   </ol>
   
+## 5. Assign initial classification
+This script set initial classification to each cell (that can later be used for training an Object classification – see Train Object Classifier for details) based on the probabilities given by nimbus for each channel and a user defined cell class definitions based on these probabilities.
+This script runs on the currently open image. To run the script do the following steps:
+<ol>
+  <li>Make sure the image used for the segmentation is selected in the project</li>
+  <li>Download the Set_Class_by_Measurments_Threshold.groovy file from  [here](../../tree/QuPath)</li>
+  <li>Open the script in your QuPath project.</li>
+  <li>Modify the script to fit your needs. Specifically:
+    <ol>
+      <li></li>Set defaultPositiveThreshold: set this to a value that will be used as the positive threshold for channels that no specific threshold is provided in the Class table (See Define Class table for details) (line ~42)</ol>
+      <li>Set defaultNegativeThreshold: set this to a value that will be used as the negative threshold for channels that no specific threshold is provided in the Class table (See Define Class table for details) (line ~42)</li>
+<li>Set defaultSuffix: a string that will be concatenated to ALL measurements indicated in the Class table table (See Define Class table for details) (line ~44)
+<li>In case you exported specific regions and not the entire image:
+<li>Set parameter annotationToConsider to the class used when exported the segmentation. (line ~49)
+<li>Set the variable fullImageAnnotation to be false (line ~50)
+Otherwise, 
+<li>Set the variable fullImageAnnotation to be true (line ~50)
+<li>Set classificationFolder, classificationFileName: A folder and a file name where a tsv file containing the center coordinates of every cell that was associated to a single class, together with its associated class. This file can be uploaded to QuPath to facilitate Object Classification (See Train object classifier for details), (lines ~53,54).
+g.	Set cell classes: See Define Class table for details.
+
 
       
 
