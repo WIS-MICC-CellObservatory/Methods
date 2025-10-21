@@ -114,16 +114,77 @@ This script runs on the currently open image. To run the script do the following
   <li>Open the script in your QuPath project.</li>
   <li>Modify the script to fit your needs. Specifically:
     <ol>
-      <li></li>Set defaultPositiveThreshold: set this to a value that will be used as the positive threshold for channels that no specific threshold is provided in the Class table (See Define Class table for details) (line ~42)</ol>
-      <li>Set defaultNegativeThreshold: set this to a value that will be used as the negative threshold for channels that no specific threshold is provided in the Class table (See Define Class table for details) (line ~42)</li>
-<li>Set defaultSuffix: a string that will be concatenated to ALL measurements indicated in the Class table table (See Define Class table for details) (line ~44)
-<li>In case you exported specific regions and not the entire image:
-<li>Set parameter annotationToConsider to the class used when exported the segmentation. (line ~49)
-<li>Set the variable fullImageAnnotation to be false (line ~50)
-Otherwise, 
-<li>Set the variable fullImageAnnotation to be true (line ~50)
-<li>Set classificationFolder, classificationFileName: A folder and a file name where a tsv file containing the center coordinates of every cell that was associated to a single class, together with its associated class. This file can be uploaded to QuPath to facilitate Object Classification (See Train object classifier for details), (lines ~53,54).
-g.	Set cell classes: See Define Class table for details.
+      <li>Set <b>defaultPositiveThreshold</b>: set this to a value that will be used as the positive threshold for channels that no specific threshold is provided in the Class table (See Define Class table for details) (line ~42)</li>
+      <li>Set <b>defaultNegativeThreshold</b>: set this to a value that will be used as the negative threshold for channels that no specific threshold is provided in the Class table (See Define Class table for details) (line ~42)</li>
+      <li>Set <b>defaultSuffix</b>: a string that will be concatenated to ALL measurements indicated in the Class table table (See Define Class table for details) (line ~44)</li>
+      <li>In case you exported specific regions and not the entire image:
+        <ol>
+          <li>Set <b>annotationToConsider</b> to the class used when exported the segmentation. (line ~49)</li>
+          <li>Set <b>fullImageAnnotation</b> to be false (line ~50)</li>
+          <li>Otherwise, Set <b>fullImageAnnotation</b> to be true (line ~50)</li>
+        </ol>
+    <li>Set <b>classificationFolder, classificationFileName</b>: A folder and a file name where a tsv file containing the center coordinates of every cell that was associated to a single class, together with its associated class. This file can be   uploaded to QuPath to facilitate Object Classification (See Train object classifier for details), (lines ~53,54).</li>
+    <li>Set cell classes: See Define Class table for details.</li>
+    </ol>
+  </li>
+</ol>
+
+### Define class table
+A Class Table is a Groovy table (lines ~25-35) that lets the user assign classes to cells based on the values of related measurements. For each class the user defines a list of measurements that are relevant to it. For each such measurement the user defines the threshold value that this measurement must pass/not reach to meet the class criteria. All conditions must be met for the cell to be associated with the class. Notice, a cell may be associated with more than one class. In that case, its classification will consist of all classes’ names separated by ‘:’.
+To define class Use the following format: 
+classes["CLASS 1"] = [{Measurement Criteria}, ... {Measurement Criteria}] 
+classes["CLASS 2"] = [{Measurement Criteria}, ... {Measurement Criteria}] 
+...
+classes["CLASS N"] = [{Measurement Criteria}, ... {Measurement Criteria}] 
+
+Where {Measurement Criteria} is a string with the following format:
+1.	Optional ‘-‘ prefix indicating that the value of the measurement must not reach the threshold. If this prefix is omitted then the measurement value must greater or equal than the threshold.
+2.	Measurement name: The name of the measurement as displayed in QuPath (case sensitive). 
+Notice, the value of defaultSuffix will be concatenated to this name. To avoid adding this suffix, add ‘!’ before the measurement name (and after the ‘-‘)
+3.	Optional ‘/” followed by a threshold value. In case this is omitted the defaultThreshold will be used.
+#### Example
+the following cell classes were defined:
+
+classes["Dendritic"] = ["CD45","CD11c","CD74", "-B220:0.4"]
+
+classes["B"] = ["CD45","CD74","B220","-CD11c"]
+
+classes["Dendritic type 1"] = ["CD11c","CLEC9A"]
+
+classes["Macrophags"] = ["CD11b","F4.80"]
+
+classes["CD4 T"] = ["CD45","CD3", "CD4", "-CD8", "-Foxp3"]
+
+classes["CD8 T"] = ["CD45","CD3", "CD8", "-CD4"]
+
+classes["Tregs"] = ["CD45","CD3", "CD4", "Foxp3"]
+
+classes["NK"] = ["CD45","Nk1.1","-CD3"]
+
+In addition, **defaultSuffix** was set to " Probability (Nimbus)" and **defaultThreshold** was set to 0.7.
+
+According to this example and the first class definition, cells that their measurements "CD45 Probability (Nimbus)", "CD11c Probability (Nimbus)", and "CD74 Probability (Nimbus)" where higher than 0.7 and the measurement "B220 Probability (Nimbus)" was below 0.4 were classified as “Dendritic”.
+
+## 6. Train object classifier
+Here we train an object classifier by:
+1.	Manually resolving all the cells that were assigned to more than one class
+2.	Upload the “classification” file created by the Initial classification script (See Assign initial classification for details)
+3.	Do other object classifications
+4.	Create the Object classifier and run it.
+Manually resolving all the cells that were assigned to more than one class
+It is recommended to load the points that were classified to more than one class or were not classified at all to the Points Tool (uploading the multi_classification.tsv or no_classification.tsv files). Clicking on each, loaded  group of dots, will highlight them in the tissue (one can set the size of the dot to be big in order to locate them.) Notice, there is a bug where in case of a class with only a single point, the point is not highlighted.
+### Training an Object Classifier
+Once you resolved to the best of your ability the ambiguities, you can train an object classifier by loading the single_classification.tsv (delete all other points). One may also load the no_classification.tsv to create an “Other” group. Make sure all classes are defined in the annotation panel.
+
+Run object classifier 
+
+<img width="693" height="185" alt="image" src="https://github.com/user-attachments/assets/74237c86-9499-4ed3-8caf-a853bc1b811e" />
+
+In the selected classes, make sure the classes of interest are selected
+
+<img width="639" height="595" alt="image" src="https://github.com/user-attachments/assets/a52e2039-f865-49c8-9ac7-f2f377c8cd70" />
+
+
 
 
       
