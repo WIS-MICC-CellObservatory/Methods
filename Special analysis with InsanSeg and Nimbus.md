@@ -1,7 +1,5 @@
 # Special analysis with InsanSeg and Nimbus
-Using, InstaSeg, QuPath latest segmentation tool, that can use large number of channels to segment cells and Nimbus, a tool that can use a large number of channels and cell segmentation to provide probability distribution for each cell and channel, we train a cell classifier in QuPath for special analysis
-
-This document describes how to run the pipeline online or in Wexac.
+Using, InstaSeg, QuPath latest segmentation tool, that can use large number of channels to segment cells and Nimbus, a tool that can use a large number of channels and cell segmentation to provide probability distribution for each cell and channel. we provide a pipeline that segmnet and classify cells in multi-channel images. The pipeline can be used both manualy using GUI or in Wexac for some of it steps.
 
 ## The pipeline
 The analysis includes the following steps:
