@@ -16,7 +16,7 @@ In the first run the user may need to set the proxy of the workstation (This is 
 **Steps**
 1. Open **Proxy settings** (see image below)
 2. Enable the "Use a proxy Server" checkbox
-3. Set the Address to be: http://bcproxy.weizm
+3. Set the Address to be: http://bcproxy.weizmann.ac.il
 4. Set the port 8080
 5. Save
 <img width="1271" height="996" alt="image" src="https://github.com/user-attachments/assets/bf8307f4-d14a-4c2e-bd33-44946986d54a" />
