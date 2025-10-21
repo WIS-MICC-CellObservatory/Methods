@@ -185,6 +185,9 @@ In the selected classes, make sure the classes of interest are selected
 <img width="639" height="595" alt="image" src="https://github.com/user-attachments/assets/a52e2039-f865-49c8-9ac7-f2f377c8cd70" />
 
 
+## Running the pipeline in wexac
+Steps 2 to 4 (running Instanseg segmentation, assigning Nimbus probabilities and importing these probabilities to QuPath) can be done in Wexac using NextGen to orchestrate the steps. Here we describe how it is done.
+
 
 
       
