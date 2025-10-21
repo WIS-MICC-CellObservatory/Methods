@@ -1,5 +1,32 @@
 # Methods
-This repository contains all the general methods and pipelines that we develop
+This repository contains all the general methods and pipelines that we develop.
+
+**Table of contents**
+1. Fiji
+
+   1.1 LSCF Library
+   
+   1.2 Macro/Headless macro templates
+2. QuPath
+
+   2.1 LSCF Scripts
+   
+   2.2 Running QuPath on Wexac
+3. Python
+ 
+   3.1 LSCF Apps
+   
+   3.2 LSCF Jupyter notebooks
+
+   3.3 Sharing python solution with users
+
+   3.4 User interface template
+4. Arivis
+   
+   4.1 LSCF Python components
+5. PipeLines
+   
+   5.1 Nimbus Pipeline
 ## Fiji
 1. LSCF Library: For sharing common methods between macro solutions
 2. Macro template: A skeleton for writing Fiji macros
@@ -34,7 +61,6 @@ For details how to run Fiji macro on Wexac machine see ([Running Fiji on Wexac.m
 
 ## QuPath
 1. Running QuPath on Wexac
-2. Nimbus Pipeline
 
 ## Python
 1. Sharing python solution with users
