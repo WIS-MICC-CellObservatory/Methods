@@ -60,8 +60,12 @@ The template can be found here ([Macro Template_headless.ijm](../../tree/main/Fi
 For details how to run Fiji macro on Wexac machine see ([Running Fiji on Wexac.md](../../tree/main)).
 
 ## QuPath
-1. Running QuPath on Wexac
-
+1. LSCF Scripts
+2. Running QuPath on Wexac
+### LSCF Scripts
+TBD
+### Running QuPath on Wexac
+To run Qupath on Wexac you need to run QuPath in "command line" mode. You can specify the project and image name (as defined in the project) along side the path to the Groovy script to be applied. The full list of parameters that can be passed to QuPath can be found here: https://qupath.readthedocs.io/en/stable/docs/advanced/command_line.html
 ## Python
 1. Sharing python solution with users
 2. User interface template
@@ -85,4 +89,31 @@ Once the solution is ready we provide the users with 3 files:
 3. README.md file with details how to run the solution
 
 General instructions regarding how users can run the solution file can be found in ([Running LSCF Python solution.md](../../tree/main)).
+
+## PipeLines
+1. Nimbus Pipeline
+
+### Nimbus pipeline
+Using, InstaSeg, QuPath latest segmentation tool, that can use large number of channels to segment cells and Nimbus, a tool that can use a large number of channels and cell segmentation to provide probability distribution for each cell and channel. we provide a pipeline that segmnet and classify cells in multi-channel images. The pipeline can be used both manualy using GUI or in Wexac for some of it steps. The analysis steps include:
+1.	Create a project in QuPath that includes the image/s to be analysed
+2.	Using QuPath Groovy script, we run InstanSeg on all of them and export The Segmentation, and tiff for each channel in a folder structure Nimbus python script expects. See Export InstaSeg segmentation.
+3.	Using Jupyter Lab, we run Payton script to assign a probability value for each cell-channel pair. See Run Jupyter Notebook for details
+4.	Using QuPath Groovy script, upload the probabilities given by Nimbus back to QuPath. See Import Nimbus probabilities to QuPath for details
+5.	Using QuPath groovy script, we assign initial classifications to each cell based on cell class table provided by the user. See Assign initial classification for details
+6.	In QuPath, Create cell classification based on these probabilities. See Train object classifier for details
+
+We will start by describing the manual pipeline and then the modification neede for running it using Wexac
+#### 1. Create a project in QuPath
+Refer to QuPath documentation: https://qupath.readthedocs.io/en/stable/index.html
+
+#### 2. Export InstaSeg segmentation
+To run the script, do the following steps:
+1.	Copy the Export_Regions_for_Nimbus.groovy template (can be found in ([Running LSCF Python solution.md](../../tree/QuPath)).) to your scripts folder
+2.	Open the script in your QuPath project. 
+3.	Modify the script to fit your needs. Specifically:
+a.	In case you want to run on specific regions and not on the entire image/s:
+i.	Create annotations of interests and set their class to be the same (e.g., “Region”). 
+ii.	Set the parameter annotationToConsider accordingly. (line 98)
+iii.	Set the variable fullImageAnnotation to be false (line 99)
+Otherwise, 
 
