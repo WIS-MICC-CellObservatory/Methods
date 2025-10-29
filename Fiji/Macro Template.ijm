@@ -1,8 +1,8 @@
 #@ Boolean(label = "Analyse a whole folder", value=true, description = "Uncheck to process a 'single file'", persist=true) iWholeDir
-#@ File (label = "Input folder (for 'whole folder')", style="directory", persist=true) iInputDir
-#@ File (label = "Input file (for 'single file')", persist=true) iInputFile
+#@ File (label = "Input folder (for 'whole folder')", required=false, style="directory", persist=true) iInputDir
+#@ File (label = "Input file (for 'single file')", required=false, persist=true) iInputFile
 #@ File (label = "Output folder", style="directory", persist=true) iOutputDir
-#@ String(label = "File suffix", value="tif", description="Relevant for 'whole folder' processing", persist=true) iSuffix
+#@ String(label = "File suffix", required=false, value="tif", description="Relevant for 'whole folder' processing", persist=true) iSuffix
 #@ Integer (label = "Threshold intensity", value=3000, persist=true) iIntensity
 #@ Boolean(label = "Batch mode", description = "For performance, no images will be shown", persist=true) iBatchMode
 #@ Boolean(label = "Use input parameters", description = "Use input parameters for each file under 'Output folder/file name'", persist=true) iUseInputParameters
