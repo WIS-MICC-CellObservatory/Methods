@@ -1,0 +1,9 @@
+# 3D Cellpose training
+Here we describe a recomended worflow of training 3D cellpose modeling. It consist of the following steps:
+1. intial segmentation of a 3D cropped images done by a pre-defined model provided by Cellpose.
+2. A Python script generates 3 directories "XY", "ZX" and "ZY" that contain tif image for each slice in the related plane.
+3. The user then, selects a subset of slices (on XY, ZX and ZY planes) to fix.
+4. Using the fixed slices a new model is trained and tested against the original 3D cropped images
+
+## 1. Cropping 3D images
+When training a cellpose model, Cellpose provide an initial segmentation for each slice in the 3D image one must segment all the cells seen in the image
