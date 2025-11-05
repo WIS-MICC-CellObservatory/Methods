@@ -11,9 +11,11 @@ Here we describe a recomended worflow of training 3D cellpose modeling. It consi
 In Fiji:
 1. Open the 3D image and find a region of the image containing relevant information (~10 cells to be segmented). 
 2. Create a "Rectangle selection" of that region and Duplicate it (right click). When duplicating, select consecutive slices and up to 2 consecuitive channels relevant for the segmentation.
-(In case the 2 channels are not consecutive, you need to create a subset of the image first, where the channels in between the 2 channels are ommited. For that use **Image>Hyperstacks>Make Subset**)
 <img width="428" height="329" alt="image" src="https://github.com/user-attachments/assets/ed407590-62fe-4153-ad25-a9942e2f3181" />
-3. Save the cropped image with a meaningfull name (e.g., adding "_crop1" to the original name)
+
+(In case the 2 channels are not consecutive, you need to create a subset of the image first, where the channels in between the 2 channels are ommited. For that use **Image>Hyperstacks>Make Subset**)
+
+3. Save the cropped image with a meaningfull name (e.g., adding "_crop1" suffix to the original name)
 4. Repeat these steps for other reagions of interest in the image and in other images
 
 ## 2. Cellpose initial 3D segmentation
@@ -23,5 +25,6 @@ In Fiji:
 4. Save the label image created by the image
 
 ## 3. Generate XY, ZX, ZY matching slices
-1. 
+1. Close the cellpose GUI and reopen the anaconda window where the cellpose enviorment is activated
+2. run run a python script that slice the cropped 3D image and the related 3D label image: 
 When training a cellpose model, Cellpose provide an initial segmentation for each slice in the 3D image one must segment all the cells seen in the image
