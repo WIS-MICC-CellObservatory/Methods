@@ -20,11 +20,23 @@ In Fiji:
 
 ## 2. Cellpose initial 3D segmentation
 1. Open anaconda prompt and activate the relevant cellpose enviorenment (e.g., "conda activate cellpose3")
-2. run **cellpose --Zstack** to open the GUI for 3D segmentation
+2. run **cellpose --Zstack** to open the GUI for 3D segmentation 
 3. Load each of the cropped images and segment it using the pre-define model provided by Cellpose (e.g., **cyto3** or **cpsam**)
 4. Save the label image created by the image
 
 ## 3. Generate XY, ZX, ZY matching slices
 1. Close the cellpose GUI and reopen the anaconda window where the cellpose enviorment is activated
-2. run run a python script that slice the cropped 3D image and the related 3D label image: 
+2. There, run **python isotropic_3D_slicer.py --gui** that can be found here. (you need to provide a full path or nevigate to where you stored it on disk). A window opens (see image below)
+<img width="1200" height="942" alt="image" src="https://github.com/user-attachments/assets/48011e4a-7831-48b7-80b2-26d402be098d" />
+
+3. First run it on the cropped image. Set the parameters as follows
+
+**- Input TIFF**: full path to cropped image
+
+**- Z Axis**: select **first**. If for some reason the slices dimentions dont look right, contact us
+**- Channel Axis**: if there is only one channel, select **None**, otherwise select **1**. If for some reason the slices dont look right, contact us
+- Select the cropped image as the input file
+
+- Select the image type to be **image**
+- If there is only one channel se
 When training a cellpose model, Cellpose provide an initial segmentation for each slice in the 3D image one must segment all the cells seen in the image
