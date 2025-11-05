@@ -31,12 +31,31 @@ In Fiji:
 
 3. First run it on the cropped image. Set the parameters as follows
 
-**- Input TIFF**: full path to cropped image
+- **Input TIFF**: full path to cropped image
+- **Z Axis**: select **first**. If for some reason the slices dimentions dont look right, contact us
+- **Channel Axis**: if there is only one channel, select **None**, otherwise select **1**. If for some reason the slices dont look right, contact us
+- **Z aspect**: enter the voxel depth divided by the pixel size (Can be found in Fiji image properties)
+- **Output folder**: A folder where the slices will be generated
+- **mode**: set to **image**
+- check **skip empty slices**
 
-**- Z Axis**: select **first**. If for some reason the slices dimentions dont look right, contact us
-**- Channel Axis**: if there is only one channel, select **None**, otherwise select **1**. If for some reason the slices dont look right, contact us
-- Select the cropped image as the input file
+in the output folder a folder named as the image name is created and in it 3 directories: XY, ZX, ZY each containing the relevant slices
 
-- Select the image type to be **image**
-- If there is only one channel se
-When training a cellpose model, Cellpose provide an initial segmentation for each slice in the 3D image one must segment all the cells seen in the image
+4. Now run the script on the label images. CHange the following parameters:
+
+- **Input TIFF**: full path to the 3D labe image (probably resides in the same folder as the cropped image with a "_cp_masks" suffix)
+- **Channel Axis**: set to **None**
+- **mode**: set to **labels**
+
+if indeed the label image has the same name as the image with the above suffix then folders created for the image will be used for the label image, otherwise new folders will be created for it and the lable image slices will be stored there.
+
+5. Close the script and reopen cellpose in 2D mode: **cellpose** (without the --Zstack flag)
+
+## 4. Select subset of images to train the model
+1. The user now select a subset of slices to fix and copies them to a new folder that contains only them (e.g., **Training Model**). For each such slice:
+2. The slice is loaded into cellpose (**File>Load image**)
+3. The corresponding label image is loaded as label image (**File>Load label image**)
+4. The user fixes **ALL** the segmentations (see instructions in **Model>Training instructions**)
+5. The user saves the fixed segmentation in the new folder next to the slice (**File>Save Segmentation**)
+
+## 5. Train a new model
