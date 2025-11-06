@@ -26,14 +26,17 @@ In Fiji:
 
 ## 3. Generate XY, ZX, ZY matching slices
 1. Close the Cellpose GUI and reopen the anaconda window where the Cellpose environment is activated
-2. There, run **python isotropic_3D_slicer.py --gui** that can be found here ([Library.txt](../../tree/main/Python)). (you need to provide a full path or navigate to where you stored it on disk). A window opens (see image below)
-<img width="1200" height="942" alt="image" src="https://github.com/user-attachments/assets/48011e4a-7831-48b7-80b2-26d402be098d" />
+2. There, run **python isotropic_3D_slicer.py --gui** that can be found here. (you need to provide a full path or navigate to where you stored it on disk). A window opens (see image below)
+<img width="1002" height="462" alt="image" src="https://github.com/user-attachments/assets/9e3fa7f6-2a0a-4f9a-b0c1-aaff071edae0" />
 
-3. First run it on the cropped image. Set the parameters as follows
 
+3. First run it on the cropped image. Set the parameters as follows:
 - **Input TIFF**: full path to cropped image
-- **Z Axis**: select **first**. If for some reason the slices dimensions don’t look right, contact us
-- **Channel Axis**: if there is only one channel, select **None**, otherwise select **1**. If for some reason the slices don’t look right, contact us
+
+Once you select the image, its shape is visible in the row below. This can guide you where the stack (Z) and channel (C) axis are
+
+- **Z Axis**: usually select **first**, but double check with the image shape
+- **Channel Axis**: if there is only one channel, select **None**, otherwise usually select **1**, but double check with the image shape
 - **Z aspect**: enter the voxel depth divided by the pixel size (Can be found in Fiji image properties)
 - **Output folder**: A folder where the slices will be generated
 - **mode**: set to **image**
