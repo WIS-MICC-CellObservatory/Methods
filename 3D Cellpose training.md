@@ -26,7 +26,7 @@ In Fiji:
 
 ## 3. Generate XY, ZX, ZY matching slices
 1. Close the Cellpose GUI and reopen the anaconda window where the Cellpose environment is activated
-2. There, run **python isotropic_3D_slicer.py --gui** that can be found here. (you need to provide a full path or navigate to where you stored it on disk). A window opens (see image below)
+2. There, run **python isotropic_3D_slicer.py --gui** that can be found here ([Library.txt](../../tree/main/Python)). (you need to provide a full path or navigate to where you stored it on disk). A window opens (see image below)
 <img width="1200" height="942" alt="image" src="https://github.com/user-attachments/assets/48011e4a-7831-48b7-80b2-26d402be098d" />
 
 3. First run it on the cropped image. Set the parameters as follows
