@@ -23,4 +23,31 @@ We recommend that the folder where the image is stored is a designated folder (c
 **Notice:** Open the image in arivis and make sure the voxel size is correct (select the "i" view and comapre image properties to the original image). In case the voxel size was not set correctly, fix it manualey by selecting the "Edit" Button
 
 ## 2. Inner vein object
-Open the image in Arivis and load the pipeline that can be found here
+1. Open the image in Arivis
+2. We recommend focusing on a region of the vein for the analysis to save time. To do so:
+- Switch to 2D view: Select the <img width="61" height="66" alt="image" src="https://github.com/user-attachments/assets/947aa7b1-2da9-432b-bfea-e8158bbb14af" /> button on the lower left 
+- Focus on the area of the vein you are interested in using the mouse scrorller and the <img width="160" height="52" alt="image" src="https://github.com/user-attachments/assets/9b02bf46-c524-4248-b83d-45dc16e94d2f" /> buttons
+ (make sure the entire width of the vein is captured and some more)
+
+<img width="2708" height="1264" alt="image" src="https://github.com/user-attachments/assets/0346ca0f-0c92-4c7a-a5ba-47c3a2d53c2b" />
+3. load the "Vein complement" pipeline that can be found [here](../../tree/Arivis):
+- Enter the pipeline panel: Analysis>Analysis panel.
+- Load the pipeline using the import option that can be found in the drop down menu on the upper right corner of the panel. nevigate to where you have downloaded the pipeline
+- A prompt indicating the pipeline is zipped is given - select the import button to proceed
+The following pipeline is loaded to the panel:
+
+<img width="1109" height="1455" alt="image" src="https://github.com/user-attachments/assets/0e15743f-252f-44b6-94ff-f7f080c17efc" />
+
+
+4. In case you are running on the entir image set the "ROI" of the first operation, "Input ROI" to be "Current image Set". However, if you focused on a specific region (as suggested above) then:
+- Set the "ROI" to be "Current View (2D)": As a result the current image coordinates are set in the "Bounds" parameter
+- Now switch the ROI to be "Custom"
+- Change the "Planes" parameter to be "All:1-nnn", where nnn is the number of planes in the image
+
+5. In the "Intensity Threshold Segmenter" operation change the "Threshold" value if needed: Use the "Value picker" tool to guestimate the right value
+6. Run the pipeline to that point only: in the drop down menu of that operation ("Intensity Threshold Segmenter", that is) located at its upper right corner select the "Run pipeline to here" option
+7. Nevigate to the "Object table" by selecting the <img width="57" height="53" alt="image" src="https://github.com/user-attachments/assets/b9a638d4-f91b-489c-ac67-be117ba400ab" /> button
+
+The pipeline can be run on the entire image but we recommend selecting a section of the vein to save time. To do so, 
+
+2. Now load 
