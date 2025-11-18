@@ -23,4 +23,4 @@ We recommend that the folder where the image is stored is a designated folder (c
 **Notice:** Open the image in arivis and make sure the voxel size is correct (select the "i" view and comapre image properties to the original image). In case the voxel size was not set correctly, fix it manualey by selecting the "Edit" Button
 
 ## 2. Inner vein object
-Open the image in Arivis
+Open the image in Arivis and load the pipeline that can be found here
