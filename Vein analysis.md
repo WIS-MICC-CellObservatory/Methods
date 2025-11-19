@@ -49,8 +49,10 @@ The following pipeline is loaded to the panel:
 7. Nevigate to the "Object table" by selecting the <img width="57" height="53" alt="image" src="https://github.com/user-attachments/assets/b9a638d4-f91b-489c-ac67-be117ba400ab" /> button
 8. Select the "red signal" object on the left. A list of all the identified object is listed on the right. Sort them by volume (largest to smallest). If the "Volume" column does not apper add it by selecting the volume feature from the "Feature column" menu
 <img width="1853" height="863" alt="image" src="https://github.com/user-attachments/assets/7afdad36-a514-40e9-9349-a3a390f62a8f" />
+9. Only the largest object represent the vein, so use the volume of the second largest object to set the threshold volume in the next operation "Object Feature Filter"
+10. Now you can run the pipeline all the way to the end by selecting the run button located at the top of the pipeline 
+<img width="200" height="231" alt="image" src="https://github.com/user-attachments/assets/e8599756-d7a6-4b74-98e5-a437257dea7c" />
+11. Nevigate again to the "Object table" and select the "vein complement" object. In the list of objects on the right, only one replesent the inner vein (usualy it would be the 2nd when sorted by volume). Delete all the other objects in the list (ctrl select and right click "delete")
+**Notice:** if more than one object represent the inner vein contact us
+12. Save the image so the single "vein complement" object can be used in the next pipeline
 
-
-The pipeline can be run on the entire image but we recommend selecting a section of the vein to save time. To do so, 
-
-2. Now load 
