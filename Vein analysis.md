@@ -77,4 +77,8 @@ and one that represent the endothelium within the ring (E-10, E50, E100, E200 an
 
 One can change the size of the rings but it needs to be done with care: It is recommended that the naming convention is kept such that the name of the object represent its distance from the inner side of the vein
 
--  
+## 4. Neurite analysis
+1. load the "Neurite analysis" pipeline that can be found [here](../../tree/Arivis)
+2. **Important**: Copy the bounds values used in the "Vein complement" to the bounds parameter in the "Input ROI" operation
+3. Run the pipeline and check the traces generated in the "Object table"
+4. Add columns from the "Feature column" as suggested in this tutorial: https://www.youtube.com/watch?v=fcFmbzwIdyk&t=2020s 
