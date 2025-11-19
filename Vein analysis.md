@@ -30,7 +30,7 @@ We recommend that the folder where the image is stored is a designated folder (c
  (make sure the entire width of the vein is captured and some more)
 
 <img width="2708" height="1264" alt="image" src="https://github.com/user-attachments/assets/0346ca0f-0c92-4c7a-a5ba-47c3a2d53c2b" />
-3. load the "Vein complement" pipeline that can be found [here](../../tree/Arivis):
+3. load the "Vein complement" pipeline that can be found [here](../../tree/Arivis)
 - Enter the pipeline panel: Analysis>Analysis panel.
 - Load the pipeline using the import option that can be found in the drop-down menu on the upper right corner of the panel. navigate to where you have downloaded the pipeline
 - A prompt indicating the pipeline is zipped is given - select the import button to proceed
