@@ -32,12 +32,10 @@ We recommend that the folder where the image is stored is a designated folder (c
  (make sure the entire width of the vein is captured and some more)
 
 <img width="2708" height="1264" alt="image" src="https://github.com/user-attachments/assets/0346ca0f-0c92-4c7a-a5ba-47c3a2d53c2b" />
-3. load the "Vein complement" pipeline that can be found [here](../../tree/Arivis)
+3. load the "Vein complement" pipeline that can be found [xxx](../../tree/Arivis)
 
 - Enter the pipeline panel: Analysis>Analysis panel.
-
 - Load the pipeline using the import option that can be found in the drop-down menu on the upper right corner of the panel. navigate to where you have downloaded the pipeline
-
 - A prompt indicating the pipeline is zipped is given - select the import button to proceed
 The following pipeline is loaded to the panel:
 
@@ -72,13 +70,9 @@ The following pipeline is loaded to the panel:
 5. By default the pipeline generates the following rings
 
 - 10 pixels into the "vein complement"
-
 - 50 pixels from the inner side of the vein
-
 - the following 50 pixels (50-100)
-
 - the following 100 pixels (100-200)
-
 - the following 100 pixels (200-300)
 
 For each ring it provides 2 objects: one that represent the whole ring (I-10, I50, S100, S200 and S300)
