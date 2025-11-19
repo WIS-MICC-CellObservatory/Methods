@@ -1,0 +1,127 @@
+<!--Created by arivis Pro 4.4.0 tags/4.4-release^0@de835d9cac6666dddbfbb4871fddf807d9922d0f-->
+<pipeline created="0001-01-01T00:00:00" modified="2025-11-19T10:33:22.9003791+02:00" version="4.4" read_version="4.4">
+  <operations>
+    <operation type-id="arivis.analysis.selection" id="arivis.analysis.selection1">
+      <outputs>[{"Channels":[{"v":1,"id":"arivis.analysis.selection1.0.0","p":null,"n":"Vein","a":true},{"v":1,"id":"arivis.analysis.selection1.0.1","p":null,"n":"endothelium","a":true}]},{"Channels":[]},{"ObjectTags":[]}]</outputs>
+      <settings>{"FilePath":"V:\\karina\\natalien\\Final files - converted and stiched\\normal veins\\Arivis4_4\\Patient 32 - normal saphenous vein - stianed for CD31-Cy5-no valve - take2\\Patient 32 - normal saphenous vein - stianed for CD31-Cy5-no valve.sis","ImageSetId":"0","PixelSize":{"X":1.6250018518518519,"Y":1.6249991776315789,"Z":3.0},"PixelType":"UInt16","ChannelCount":2,"Bounds":{"X1":306,"X2":2159,"Y1":861,"Y2":1876,"Z1":0,"Z2":1099,"T1":0,"T2":0},"FullBounds":{"X1":0,"X2":2159,"Y1":0,"Y2":4863,"Z1":0,"Z2":1099,"T1":0,"T2":0},"Channels":"1;2","SelectionHint":"Custom","Scaling":1.0,"ScalingIncludeZ":true,"CropInputData":false,"LegacyMode":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.import.ImportDocumentObjects" id="arivis.analysis.import.ImportDocumentObjects1" name="Import Document Objects">
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.0","p":null,"n":"Import Document Objects","a":true,"cm":0,"c":"Cyan"},{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.vein complement","p":null,"n":"vein complement - Imported","a":true,"cm":4,"c":"Cyan"},{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.filled red","p":null,"n":"filled red - Imported","a":true,"cm":4,"c":"Cyan"}]}]</outputs>
+      <settings>{"Tags":["vein complement","filled red"],"CopyCompartments":false,"CopyStoredFeatures":false,"TagsForOutput":null,"CopyTags":false,"TagsToRemove":null}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.segmentation.IntensityThreshold" id="arivis.analysis.segmentation.IntensityThreshold1" name="Intensity Threshold Segmenter">
+      <inputs>[{"Channels":[{"v":1,"id":"arivis.analysis.selection1.0.1"}]},{}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.segmentation.IntensityThreshold1.0.0","p":null,"n":"endothelium","a":true,"cm":2,"c":"#0000D8"}]}]</outputs>
+      <settings>{"PerformPlaneWise":false,"ObjectNamePattern":"$t #$I ($o)","Method":"Simple","ThresholdType":"Otsu","BrightObjects":true,"Thinning":0.5,"Diameter":12.999993421052631,"LocalThreshold":3276.75,"Quantile":0.5,"LowerQuantile":0.5,"UpperQuantile":1.0,"Threshold":3500.0,"LowerThreshold":255.0,"UpperThreshold":65535.0,"PreparationRange":"TimePoint","PreMorphology":{"Active":false,"Type":"Closing","Shape":"Ball","Radius":1.6249991776315789,"DefinedInVoxels":false,"In3D":false},"AllowHoles":false,"InclusionFilling":"All","InclusionSize":26.40626672909052,"InclusionIn3D":false,"PostMorphology":{"Active":false,"Type":"Opening","Shape":"Ball","Radius":1.6249991776315789,"DefinedInVoxels":false,"In3D":false},"Connectivity":"FullXY","CheckConnectivityLast":true,"CoreThresholdFilterActive":false,"CoreThreshold":49151.25,"SizeFilterActive":false,"SizeFilter":{"LowerValue":26.40626672909052,"UpperValue":277429.5195091708,"Type":1}}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.Morphology" id="arivis.analysis.volume.Morphology1" name="Segment Morphology">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.filled red"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology1.0.0","p":null,"n":"D-10","a":true,"cm":2,"c":"Cyan"}]}]</outputs>
+      <settings>{"Method":"Dilation","Shape":"Ball","Steps":10,"InclusionSizeFilter":"All","InclusionSize":792.1880018727156,"SkeletonType":"MedialAxis","PerformPlaneWise":true,"CreateGroups":false,"ObjectNamePattern":"$n ($o)","MergeOverlappingObjects":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath2" name="Object Math 2">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.vein complement"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology1.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath2.0.0","p":null,"n":"I-10","a":true,"cm":2,"c":"#6BD8B3"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath4" name="Object Math 4">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath2.0.0"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.segmentation.IntensityThreshold1.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath4.0.0","p":null,"n":"E-10","a":true,"cm":2,"c":"#D80000"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.Morphology" id="arivis.analysis.volume.Morphology2" name="Segment Morphology 2">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.vein complement"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology2.0.0","p":null,"n":"D50","a":true,"cm":2,"c":"#00D800"}]}]</outputs>
+      <settings>{"Method":"Dilation","Shape":"Ball","Steps":50,"InclusionSizeFilter":"All","InclusionSize":792.1880018727156,"SkeletonType":"MedialAxis","PerformPlaneWise":true,"CreateGroups":false,"ObjectNamePattern":"$n ($o)","MergeOverlappingObjects":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath1" name="Object Math">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.filled red"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology2.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath1.0.0","p":null,"n":"I50","a":true,"cm":2,"c":"#C96EC9"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath6" name="Object Math 6">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.segmentation.IntensityThreshold1.0.0"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath1.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath6.0.0","p":null,"n":"E50","a":true,"cm":2,"c":"#AD5EAD"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.Morphology" id="arivis.analysis.volume.Morphology3" name="Segment Morphology 3">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology2.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology3.0.0","p":null,"n":"D100","a":true,"cm":2,"c":"#D88B00"}]}]</outputs>
+      <settings>{"Method":"Dilation","Shape":"Ball","Steps":50,"InclusionSizeFilter":"All","InclusionSize":792.1880018727156,"SkeletonType":"MedialAxis","PerformPlaneWise":true,"CreateGroups":false,"ObjectNamePattern":"$n ($o)","MergeOverlappingObjects":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath3" name="Object Math 3">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.filled red"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology3.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath3.0.0","p":null,"n":"I100","a":true,"cm":2,"c":"#D800D8"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath7" name="Object Math 7">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath3.0.0"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath1.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath7.0.0","p":null,"n":"S100","a":true,"cm":2,"c":"#5CBA9A"}]}]</outputs>
+      <settings>{"Modification":"Subtract","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath5" name="Object Math 5">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.segmentation.IntensityThreshold1.0.0"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath7.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath5.0.0","p":null,"n":"E100","a":true,"cm":2,"c":"#00BA00"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.Morphology" id="arivis.analysis.volume.Morphology4" name="Segment Morphology 4">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology3.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology4.0.0","p":null,"n":"D200","a":true,"cm":2,"c":"#BA7800"}]}]</outputs>
+      <settings>{"Method":"Dilation","Shape":"Ball","Steps":100,"InclusionSizeFilter":"All","InclusionSize":792.1880018727156,"SkeletonType":"MedialAxis","PerformPlaneWise":true,"CreateGroups":false,"ObjectNamePattern":"$n ($o)","MergeOverlappingObjects":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath8" name="Object Math 8">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.filled red"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology4.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath8.0.0","p":null,"n":"I200","a":true,"cm":2,"c":"#BA00BA"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath9" name="Object Math 9">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath8.0.0"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath3.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath9.0.0","p":null,"n":"S200","a":true,"cm":2,"c":"#0000BA"}]}]</outputs>
+      <settings>{"Modification":"Subtract","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath10" name="Object Math 10">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.segmentation.IntensityThreshold1.0.0"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath9.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath10.0.0","p":null,"n":"E200","a":true,"cm":2,"c":"#BA0000"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.Morphology" id="arivis.analysis.volume.Morphology5" name="Segment Morphology 5">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology4.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology5.0.0","p":null,"n":"D300","a":true,"cm":2,"c":"#00F700"}]}]</outputs>
+      <settings>{"Method":"Dilation","Shape":"Ball","Steps":100,"InclusionSizeFilter":"All","InclusionSize":792.1880018727156,"SkeletonType":"MedialAxis","PerformPlaneWise":true,"CreateGroups":false,"ObjectNamePattern":"$n ($o)","MergeOverlappingObjects":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath11" name="Object Math 11">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.filled red"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.Morphology5.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath11.0.0","p":null,"n":"I300","a":true,"cm":2,"c":"#E77EE7"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath12" name="Object Math 12">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath11.0.0"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath8.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath12.0.0","p":null,"n":"S300","a":true,"cm":2,"c":"#7BF7CE"}]}]</outputs>
+      <settings>{"Modification":"Subtract","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath13" name="Object Math 13">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.segmentation.IntensityThreshold1.0.0"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath12.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath13.0.0","p":null,"n":"E300","a":true,"cm":2,"c":"#F7A000"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.store.ExportObjectFeatures" id="arivis.analysis.store.ExportObjectFeatures1" name="Export Object Features">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath2.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath4.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath1.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath6.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath7.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath5.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath9.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath10.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath12.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath13.0.0"}]}]</inputs>
+      <settings>{"FilePath":"V:\\karina\\natalien\\Final files - converted and stiched\\normal veins\\Arivis4_4\\Patient 32 - normal saphenous vein - stianed for CD31-Cy5-no valve - take2\\Patient 32 - normal saphenous vein - stianed for CD31-Cy5-no valve-objectfeatures.xlsx","Features":[{"FeatureId":"arivis.analysis.features.tags","ValueIndex":0},{"FeatureId":"id","ValueIndex":0},{"FeatureId":"arivis.analysis.features.name","ValueIndex":0},{"FeatureId":"arivis.analysis.features.volume","ValueIndex":0}],"Details":null,"Mode":"SingleTable"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.store.StoreObjects" id="arivis.analysis.store.StoreObjects1">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath2.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath4.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath1.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath6.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath7.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath5.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath9.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath10.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath12.0.0"},{"v":1,"id":"arivis.analysis.volume.ObjectMath13.0.0"}]}]</inputs>
+      <settings>{"NamePattern":"$n","TagPattern":"$n","TagsToAdd":null,"TagsToDelete":["filled red - Imported","vein complement - Imported","Import Document Objects","endothelium","D-10","D50","D100","I100","D200","I200","D300","I300"],"PreserveAllTags":false,"MeshSegments":false,"KeepOnUndo":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.endOfPipeline" id="arivis.analysis.endOfPipeline1">
+      <settings />
+    </operation>
+  </operations>
+  <layout>
+    <entry name="arivis.analysis.store.StoreObjects1">[]</entry>
+    <entry name="_viewpartstates">arivis.analysis.selection1=advanced
+arivis.analysis.store.StoreObjects1=advanced
+</entry>
+    <entry name="arivis.analysis.segmentation.IntensityThreshold1">{"LocalThreshold":{"pixeltype":"UInt16","maximum":"65535"},"UpperThreshold":{"pixeltype":"UInt16","minimum":"0","maximum":"65535"},"Threshold":{"pixeltype":"UInt16","minimum":"0","maximum":"65535"},"CoreThreshold":{"pixeltype":"UInt16","minimum":"3500","maximum":"65535"}}</entry>
+  </layout>
+  <features><![CDATA[{"Version":"3.1","Features":[]}]]></features>
+</pipeline>

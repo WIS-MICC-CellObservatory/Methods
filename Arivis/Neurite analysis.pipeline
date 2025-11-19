@@ -1,0 +1,37 @@
+<!--Created by arivis Pro 4.4.0 tags/4.4-release^0@de835d9cac6666dddbfbb4871fddf807d9922d0f-->
+<pipeline created="0001-01-01T00:00:00" modified="2025-11-18T14:45:46.537496+02:00" version="4.4" read_version="4.2">
+  <operations>
+    <operation type-id="arivis.analysis.selection" id="arivis.analysis.selection1">
+      <outputs>[{"Channels":[{"v":1,"id":"arivis.analysis.selection1.0.0","p":null,"n":"Vein","a":true},{"v":1,"id":"arivis.analysis.selection1.0.1","p":null,"n":"endothelium","a":true}]},{"Channels":[]},{"ObjectTags":[]}]</outputs>
+      <settings>{"FilePath":"V:\\karina\\natalien\\Final files - converted and stiched\\normal veins\\Arivis4_4\\Patient 32 - normal saphenous vein - stianed for CD31-Cy5-no valve\\Patient 32 - normal saphenous vein - stianed for CD31-Cy5-no valve.sis","ImageSetId":"0","PixelSize":{"X":1.6250018518518519,"Y":1.6249991776315789,"Z":3.0},"PixelType":"UInt16","ChannelCount":2,"Bounds":{"X1":0,"X2":2040,"Y1":1003,"Y2":1473,"Z1":0,"Z2":1099,"T1":0,"T2":0},"FullBounds":{"X1":0,"X2":2159,"Y1":0,"Y2":4863,"Z1":0,"Z2":1099,"T1":0,"T2":0},"Channels":"1;2","SelectionHint":"Custom","Scaling":1.0,"ScalingIncludeZ":true,"CropInputData":false,"LegacyMode":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.import.ImportDocumentObjects" id="arivis.analysis.import.ImportDocumentObjects1" name="Import Document Objects">
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.0","p":null,"n":"Import Document Objects","a":true,"cm":0,"c":"Cyan"},{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.vein complement","p":null,"n":"vein complement - Imported","a":true,"cm":4,"c":"Cyan"},{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.closed red","p":null,"n":"closed red - Imported","a":true,"cm":4,"c":"Cyan"}]}]</outputs>
+      <settings>{"Tags":["vein complement","closed red"],"CopyCompartments":false,"CopyStoredFeatures":false,"TagsForOutput":null,"CopyTags":false,"TagsToRemove":null}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.segmentation.NeuronTracer" id="arivis.analysis.segmentation.NeuronTracer1" name="Neurite Tracer">
+      <inputs>[{"Channels":[{"v":1,"id":"arivis.analysis.selection1.0.1"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.segmentation.NeuronTracer1.0.0","p":null,"n":"Neurite Tracer","a":true,"cm":1,"c":"#D80000"}]}]</outputs>
+      <settings>{"ObjectNamePattern":"$t #$I ($o)","TracingMethod":"App2","LowerDiameter":3.2500037037037037,"UpperDiameter":24.375027777777778,"TubularitySensitivity":6553.5,"TubularityThreshold":0.1,"CorrelationThreshold":0.8,"LowerThreshold":2551.0,"MaxSimplificationError":0.4062497944078947,"SmoothingIterations":5,"MinLength":34.12503888888889,"KeepOnlyTracesWithCellBody":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.volume.ObjectMath" id="arivis.analysis.volume.ObjectMath1" name="Object Math">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.closed red"}]},{"ObjectTags":[{"v":1,"id":"arivis.analysis.import.ImportDocumentObjects1.0.0"}]}]</inputs>
+      <outputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.volume.ObjectMath1.0.0","p":null,"n":"Object Math","a":true,"cm":2,"c":"#00D800"}]}]</outputs>
+      <settings>{"Modification":"Intersect","MergeOnlyOverlappingObjects":false,"UseFullConnectivity":true,"OnlyModifiedObjects":false,"ObjectNamePattern":"$n ($o)"}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.store.StoreObjects" id="arivis.analysis.store.StoreObjects1">
+      <inputs>[{"ObjectTags":[{"v":1,"id":"arivis.analysis.segmentation.NeuronTracer1.0.0"}]}]</inputs>
+      <settings>{"NamePattern":"$n","TagPattern":"$n","TagsToAdd":null,"TagsToDelete":["vein complement - Imported","closed red - Imported","Object Math","Import Document Objects"],"PreserveAllTags":false,"MeshSegments":false,"KeepOnUndo":false}</settings>
+    </operation>
+    <operation type-id="arivis.analysis.endOfPipeline" id="arivis.analysis.endOfPipeline1">
+      <settings />
+    </operation>
+  </operations>
+  <layout>
+    <entry name="arivis.analysis.store.StoreObjects1">[]</entry>
+    <entry name="_viewpartstates">arivis.analysis.selection1=advanced
+</entry>
+    <entry name="arivis.analysis.segmentation.NeuronTracer1">{"Foreground":{"pixeltype":"UInt16","minimum":"0","maximum":"65535"}}</entry>
+  </layout>
+  <features><![CDATA[{"Version":"3.1","Features":[]}]]></features>
+</pipeline>
