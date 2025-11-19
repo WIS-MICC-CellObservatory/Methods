@@ -47,6 +47,9 @@ The following pipeline is loaded to the panel:
 5. In the "Intensity Threshold Segmenter" operation change the "Threshold" value if needed: Use the "Value picker" tool to guestimate the right value
 6. Run the pipeline to that point only: in the drop down menu of that operation ("Intensity Threshold Segmenter", that is) located at its upper right corner select the "Run pipeline to here" option
 7. Nevigate to the "Object table" by selecting the <img width="57" height="53" alt="image" src="https://github.com/user-attachments/assets/b9a638d4-f91b-489c-ac67-be117ba400ab" /> button
+8. Select the "red signal" object on the left. A list of all the identified object is listed on the right. Sort them by volume (largest to smallest). If the "Volume" column does not apper add it by selecting the volume feature from the "Feature column" menu
+<img width="1853" height="863" alt="image" src="https://github.com/user-attachments/assets/7afdad36-a514-40e9-9349-a3a390f62a8f" />
+
 
 The pipeline can be run on the entire image but we recommend selecting a section of the vein to save time. To do so, 
 
