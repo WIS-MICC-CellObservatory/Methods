@@ -25,14 +25,19 @@ We recommend that the folder where the image is stored is a designated folder (c
 ## 2. Inner vein object
 1. Open the image in Arivis
 2. We recommend focusing on a region of the vein for the analysis to save time. To do so:
+
 - Switch to 2D view: Select the <img width="61" height="66" alt="image" src="https://github.com/user-attachments/assets/947aa7b1-2da9-432b-bfea-e8158bbb14af" /> button on the lower left 
+
 - Focus on the area of the vein you are interested in using the mouse scroller and the <img width="160" height="52" alt="image" src="https://github.com/user-attachments/assets/9b02bf46-c524-4248-b83d-45dc16e94d2f" /> buttons
  (make sure the entire width of the vein is captured and some more)
 
 <img width="2708" height="1264" alt="image" src="https://github.com/user-attachments/assets/0346ca0f-0c92-4c7a-a5ba-47c3a2d53c2b" />
 3. load the "Vein complement" pipeline that can be found [here](../../tree/Arivis)
+
 - Enter the pipeline panel: Analysis>Analysis panel.
+
 - Load the pipeline using the import option that can be found in the drop-down menu on the upper right corner of the panel. navigate to where you have downloaded the pipeline
+
 - A prompt indicating the pipeline is zipped is given - select the import button to proceed
 The following pipeline is loaded to the panel:
 
@@ -65,11 +70,17 @@ The following pipeline is loaded to the panel:
 3. Set the value in the "Intensity threshold" operation to fit the signal in the green channel
 4. Set the output file in the "Export object feature" operation (at the end of the pipeline): It is an excel file that contains the results
 5. By default the pipeline generates the following rings
+
 - 10 pixels into the "vein complement"
+
 - 50 pixels from the inner side of the vein
+
 - the following 50 pixels (50-100)
+
 - the following 100 pixels (100-200)
+
 - the following 100 pixels (200-300)
+
 For each ring it provides 2 objects: one that represent the whole ring (I-10, I50, S100, S200 and S300)
 <img width="1132" height="1180" alt="image" src="https://github.com/user-attachments/assets/d36ad635-bb99-4c3e-b3e7-ee5953b9516d" />
 
