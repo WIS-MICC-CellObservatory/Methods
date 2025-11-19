@@ -20,7 +20,7 @@ We recommend that the folder where the image is stored is a designated folder (c
 
 **Known issue:** If the path to the folder is too long (number of characters), converter may fail to start
 
-**Notice:** Open the image in Arivis and make sure the voxel size is correct (select the "i" view and compare image properties to the original image). In case the voxel size was not set correctly, fix it manually by selecting the "Edit" Button
+**Notice:** Once convertion is completed, open the image in Arivis and make sure the voxel size is correct (select the "i" view and compare image properties to the original image). In case the voxel size was not set correctly, fix it manually by selecting the "Edit" Button
 
 ## 2. Inner vein object
 1. Open the image in Arivis
