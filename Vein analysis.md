@@ -24,7 +24,15 @@ We recommend that the folder where the image is stored is a designated folder (c
 
 ## 2. Inner vein object
 1. Open the image in Arivis
-2. We recommend focusing on a region of the vein for the analysis to save time. To do so:
+2. load the "Vein complement" pipeline that can be found [here](./Arivis)
+- Enter the pipeline panel: Analysis>Analysis panel.
+- Load the pipeline using the import option that can be found in the drop-down menu on the upper right corner of the panel. navigate to where you have downloaded the pipeline
+- A prompt indicating the pipeline is zipped is given - select the import button to proceed
+The following pipeline is loaded to the panel:
+
+<img width="1109" height="1455" alt="image" src="https://github.com/user-attachments/assets/0e15743f-252f-44b6-94ff-f7f080c17efc" />
+
+3. Now we set the region we want the pipeline to address. If we want the entire image, we set the ROI parameter of the "ROI input" operation of the pipeline (1st operation) to be "Current image set". We recommend, however,focusing on a region of the vein for the analysis to save time. To do so you:
 
 - Switch to 2D view: Select the <img width="61" height="66" alt="image" src="https://github.com/user-attachments/assets/947aa7b1-2da9-432b-bfea-e8158bbb14af" /> button on the lower left 
 
@@ -33,14 +41,7 @@ We recommend that the folder where the image is stored is a designated folder (c
 
 <img width="2708" height="1264" alt="image" src="https://github.com/user-attachments/assets/0346ca0f-0c92-4c7a-a5ba-47c3a2d53c2b" />
 
-3. load the "Vein complement" pipeline that can be found [here](./Arivis)
 
-- Enter the pipeline panel: Analysis>Analysis panel.
-- Load the pipeline using the import option that can be found in the drop-down menu on the upper right corner of the panel. navigate to where you have downloaded the pipeline
-- A prompt indicating the pipeline is zipped is given - select the import button to proceed
-The following pipeline is loaded to the panel:
-
-<img width="1109" height="1455" alt="image" src="https://github.com/user-attachments/assets/0e15743f-252f-44b6-94ff-f7f080c17efc" />
 
 
 4. In case you are running on the entire image set the "ROI" of the first operation, "Input ROI" to be "Current image Set". However, if you focused on a specific region (as suggested above) then:
