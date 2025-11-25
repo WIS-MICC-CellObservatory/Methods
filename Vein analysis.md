@@ -32,7 +32,7 @@ We recommend that the folder where the image is stored is a designated folder (c
  (make sure the entire width of the vein is captured and some more)
 
 <img width="2708" height="1264" alt="image" src="https://github.com/user-attachments/assets/0346ca0f-0c92-4c7a-a5ba-47c3a2d53c2b" />
-3. load the "Vein complement" pipeline that can be found [here](../tree/Arivis)
+3. load the "Vein complement" pipeline that can be found [here](./Arivis)
 
 - Enter the pipeline panel: Analysis>Analysis panel.
 - Load the pipeline using the import option that can be found in the drop-down menu on the upper right corner of the panel. navigate to where you have downloaded the pipeline
@@ -63,7 +63,7 @@ The following pipeline is loaded to the panel:
 12. Save the image so the single "vein complement" object can be used in the next pipeline
 
 ## 3. Ring analysis
-1. load the "Endothelium rings" pipeline that can be found [here](../tree/Arivis)
+1. load the "Endothelium rings" pipeline that can be found [here](./Arivis)
 2. **Important**: Copy the bounds values used in the "Vein complement" to the bounds parameter in the "Input ROI" operation
 3. Set the value in the "Intensity threshold" operation to fit the signal in the green channel
 4. Set the output file in the "Export object feature" operation (at the end of the pipeline): It is an excel file that contains the results
@@ -83,7 +83,7 @@ and one that represent the endothelium within the ring (E-10, E50, E100, E200 an
 One can change the size of the rings but it needs to be done with care: It is recommended that the naming convention is kept such that the name of the object represent its distance from the inner side of the vein
 
 ## 4. Neurite analysis
-1. load the "Neurite analysis" pipeline that can be found [here](../tree/Arivis)
+1. load the "Neurite analysis" pipeline that can be found [here](./Arivis)
 2. **Important**: Copy the bounds values used in the "Vein complement" to the bounds parameter in the "Input ROI" operation
 3. Run the pipeline and check the traces generated in the "Object table"
 4. Add columns from the "Feature column" as suggested in this tutorial: https://www.youtube.com/watch?v=fcFmbzwIdyk&t=2020s 
