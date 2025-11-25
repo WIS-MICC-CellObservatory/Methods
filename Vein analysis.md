@@ -32,6 +32,7 @@ We recommend that the folder where the image is stored is a designated folder (c
  (make sure the entire width of the vein is captured and some more)
 
 <img width="2708" height="1264" alt="image" src="https://github.com/user-attachments/assets/0346ca0f-0c92-4c7a-a5ba-47c3a2d53c2b" />
+
 3. load the "Vein complement" pipeline that can be found [here](./Arivis)
 
 - Enter the pipeline panel: Analysis>Analysis panel.
